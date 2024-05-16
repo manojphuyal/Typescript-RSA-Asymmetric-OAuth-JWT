@@ -1,26 +1,43 @@
 import axios from 'axios';
 import * as forge from 'node-forge';
 
-async function getAccessToken(encryptedObj: string): Promise<string> {
+export interface JWTTokenResponse  {
+  access_token: string,
+  expires_in: number,
+  token_type: string 
+}
+export interface APIResponse  {
+  isSuccess: boolean,
+  message: string,
+  resultData: string 
+}
+
+async function getAccessToken(encryptedObj: string): Promise<JWTTokenResponse> {
   const baseUrl = 'https://localhost:44353';
   const getTokenEndpoint = baseUrl + '/api/token';
 
-  const formData = new URLSearchParams();
-  formData.append('data', encryptedObj);
-  formData.append('grant_type', "password");
+  // const formData = new URLSearchParams();
+  // formData.append('data', encryptedObj);
+  // formData.append('grant_type', "password");
   // formData.append('client_id', "DEVpX5eY9rTqV2bD3F");
   // formData.append('client_secret', "DEV1d7Rf2Kp9Yx8V3W");
 
   try {
-    const response = await axios.post(getTokenEndpoint, formData, {
-      withCredentials: false,
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' }
-    });
-    
+    const response = await axios.post(
+      getTokenEndpoint,
+      {
+        data: encryptedObj,
+        grant_type: 'password',
+      },
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+        },
+      },
+    );
+
     if (response.status === 200) {
-      const tokenResponse = response.data;
-      const accessToken = tokenResponse.access_token;
-      return accessToken;
+      return response.data;
     } else {
       throw new Error('Failed to fetch access token');
     }
@@ -31,22 +48,20 @@ async function getAccessToken(encryptedObj: string): Promise<string> {
 }
 
 async function getApiResponse(token: string): Promise<string> {
-
-  const formData =
-    {
-      "url": "https://leslinq2ddd.grafioffshorenepal.com.np/Projects/View?id=IRK3BIQc0QVon91VwHPaGA=="
-    };
+  const formData = {
+    url: 'https://leslinq2ddd.grafioffshorenepal.com.np/Projects/View?id=IRK3BIQc0QVon91VwHPaGA==',
+  };
   const baseUrl = 'https://localhost:44353';
   const getTokenEndpoint = baseUrl + '/api/LinkShortner';
 
   try {
-    const response = await axios.post(getTokenEndpoint,formData,  {
+    const response = await axios.post(getTokenEndpoint, formData, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
     });
-    
+
     if (response.status === 200) {
       const data = response.data;
       return data;
@@ -72,25 +87,48 @@ async function main() {
 
   const publicKey = forge.pki.publicKeyFromPem(publicKeyPem);
   const obj = {
-    username: "devShort",
-    password: "shortPassword",
-    clientId: "DEVpX5eY9rTqV2bD3F",
-    dateTimeUTC: new Date().toISOString()
+    username: 'devShort',
+    password: 'shortPassword',
+    clientId: 'DEVpX5eY9rTqV2bD3F',
+    dateTimeUTC: new Date().toISOString(),
   };
 
   const jsonStr = JSON.stringify(obj);
   const encryptedObj = window.btoa(publicKey.encrypt(jsonStr));
 
-  console.log('%c -------------------------------------Frontend-------------------------------------', "background-color:red; color: white; font-size:20px",);
-  console.log('%c Plaintext:', "background-color:red; color: white; font-size:15px", obj);
-  console.log('%c Encrypted of above Plain Text with public Key:',"background-color:red; color: white; font-size:15px", encryptedObj);
+  console.log(
+    '%c -------------------------------------Frontend-------------------------------------',
+    'background-color:red; color: white; font-size:20px',
+  );
+  console.log(
+    '%c Plaintext:',
+    'background-color:red; color: white; font-size:15px',
+    obj,
+  );
+  console.log(
+    '%c Encrypted of above Plain Text with public Key:',
+    'background-color:red; color: white; font-size:15px',
+    encryptedObj,
+  );
 
-  console.log('%c -------------------------------------Backend-------------------------------------', "background-color:blue; color: white; font-size:20px",);
+  console.log(
+    '%c -------------------------------------Backend-------------------------------------',
+    'background-color:blue; color: white; font-size:20px',
+  );
   try {
     const accessToken = await getAccessToken(encryptedObj);
-    console.log('%c OAuth JWT Refresh Token:',"background-color:blue; color: white; font-size:15px", accessToken);
-    const apiResponse = await getApiResponse(accessToken);
-    console.log('%c Api response with token:',"background-color:blue; color: white; font-size:15px",apiResponse);
+    console.log(accessToken.access_token);
+    console.log(
+      '%c OAuth JWT Refresh Token:',
+      'background-color:blue; color: white; font-size:15px',
+      accessToken,
+    );
+    const apiResponse = await getApiResponse(accessToken.access_token);
+    console.log(
+      '%c Api response with token:',
+      'background-color:blue; color: white; font-size:15px',
+      apiResponse,
+    );
   } catch (error) {
     console.error('Error fetching access token:', error);
   }
