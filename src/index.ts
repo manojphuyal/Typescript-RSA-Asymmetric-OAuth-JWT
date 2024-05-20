@@ -12,8 +12,11 @@ export interface APIResponse  {
   resultData: string 
 }
 
+const baseUrl = 'https://localhost:44353';//url
+//const baseUrl = 'https://localhost:44361';//leslinqapi
+//const baseUrl = 'https://localhost:44325';//leslinqapiLRS
+
 async function getAccessToken(encryptedObj: string): Promise<JWTTokenResponse> {
-  const baseUrl = 'https://localhost:44353';
   const getTokenEndpoint = baseUrl + '/api/token';
 
   // const formData = new URLSearchParams();
@@ -51,7 +54,6 @@ async function getApiResponse(token: string): Promise<string> {
   const formData = {
     url: 'https://leslinq2ddd.grafioffshorenepal.com.np/Projects/View?id=IRK3BIQc0QVon91VwHPaGA==',
   };
-  const baseUrl = 'https://localhost:44353';
   const getTokenEndpoint = baseUrl + '/api/LinkShortner';
 
   try {
