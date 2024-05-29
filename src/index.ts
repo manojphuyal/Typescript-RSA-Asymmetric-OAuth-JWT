@@ -12,9 +12,9 @@ export interface APIResponse  {
   resultData: string 
 }
 
-const baseUrl = 'https://localhost:44353';//url
+//const baseUrl = 'https://localhost:44353';//url
 //const baseUrl = 'https://localhost:44361';//leslinqapi
-//const baseUrl = 'https://localhost:44325';//leslinqapiLRS
+const baseUrl = 'https://localhost:44325';//leslinqapiLRS
 
 async function getAccessToken(encryptedObj: string): Promise<JWTTokenResponse> {
   const getTokenEndpoint = baseUrl + '/api/token';
@@ -89,9 +89,7 @@ async function main() {
 
   const publicKey = forge.pki.publicKeyFromPem(publicKeyPem);
   const obj = {
-    username: 'devShort',
-    password: 'shortPassword',
-    clientId: 'DEVpX5eY9rTqV2bD3F',
+    apiKey: 'DEVpX5eY9rTqV2bD3F',
     dateTimeUTC: new Date().toISOString(),
   };
 
