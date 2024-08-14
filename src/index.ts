@@ -13,9 +13,9 @@ export interface APIResponse  {
 }
 
 //const baseUrl = 'https://localhost:44353';//url
-//const baseUrl = 'https://localhost:44361';//leslinqapi
-const baseUrl = 'https://localhost:44325';//leslinqapiLRS
-
+const baseUrl = 'https://llapi.grafioffshorenepal.com.np';//leslinqapi
+//const baseUrl = 'https://localhost:44325';//leslinqapiLRS
+//step 2
 async function getAccessToken(encryptedObj: string): Promise<JWTTokenResponse> {
   const getTokenEndpoint = baseUrl + '/api/token';
 
@@ -25,13 +25,15 @@ async function getAccessToken(encryptedObj: string): Promise<JWTTokenResponse> {
   // formData.append('client_id', "DEVpX5eY9rTqV2bD3F");
   // formData.append('client_secret', "DEV1d7Rf2Kp9Yx8V3W");
 
+  var data = {
+    data: encryptedObj,
+    grant_type: 'password',
+  }
+  
   try {
     const response = await axios.post(
       getTokenEndpoint,
-      {
-        data: encryptedObj,
-        grant_type: 'password',
-      },
+      data,
       {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
@@ -48,16 +50,49 @@ async function getAccessToken(encryptedObj: string): Promise<JWTTokenResponse> {
     console.error('Error fetching access token:', error);
     throw error;
   }
+  
+  
+//   var ss  =   
+//   {
+//       data: encryptedObj,
+//       grant_type: 'password',
+//     };
+
+//     var postData = JSON.stringify(ss);
+//     var formData = new FormData();
+//     formData.append("postData",postData );
+
+// const xhr = new XMLHttpRequest();
+// xhr.open("POST", "https://llapi.grafioffshorenepal.com.np/api/token",false);
+// xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+// xhr.send(formData);
+// debugger
+// xhr.onload = () =>{
+//   debugger
+//   console.log(xhr.response);
+//   return xhr.response;
+// }
+
 }
 
+//step 2
+
+//step3
 async function getApiResponse(token: string): Promise<string> {
   const formData = {
     url: 'https://leslinq2ddd.grafioffshorenepal.com.np/Projects/View?id=IRK3BIQc0QVon91VwHPaGA==',
   };
-  const getTokenEndpoint = baseUrl + '/api/LinkShortner';
+  //const getTokenEndpoint = baseUrl + '/api/LinkShortner';
+  const getTokenEndpoint = baseUrl + '/api/Language/GetList';
 
   try {
-    const response = await axios.post(getTokenEndpoint, formData, {
+    // const response = await axios.post(getTokenEndpoint, formData, {
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: `Bearer ${token}`,
+    //   },
+    // });
+    const response = await axios.get(getTokenEndpoint, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
@@ -75,27 +110,32 @@ async function getApiResponse(token: string): Promise<string> {
     throw error;
   }
 }
+//step3
 
+//Open SSL
 async function main() {
+
+  //step1
   const publicKeyPem = `-----BEGIN PUBLIC KEY-----
-    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6E1byaRTXm7f3X2Yvwb4
-    1+apYiRZQq0YlA39f1MHkGpLiPvbKLGkZmGTlGksziImb1osnpkyZQbOm8g47Z/Z
-    7aphQIP4344j+7ivdLURbnhUp8MDxnta9uLIgFouxa+Lq9dYsvIeMF+Lf9Y8JZTA
-    yyxPmSCbMpVldbbLtajY3oZQhou03UnhZyhj98ETU1YwEXWu75YXAqKPMcD3goQt
-    1KMgKlaLAc/E/yyWu+idlaofcQzwXqVGUW623+j+9cV7EYOleE3hYqYuERfyMF8b
-    Citlz1WD4Rv0J2XWyghfRX9PUE+BviYX6OGo5uG8Dq583a06NxQXV9vw7CmLzOu1
-    zwIDAQAB
-    -----END PUBLIC KEY-----`;
+  MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAs4Jlhub5HCvqpgv6lVfq
+  cjk6ILGM5FmYj/tx6Uz3ubbwRrzGUBvsacrvpTcxkK4VuyWHFcp2zpXZtltQQmne
+  Vx9rqyiNfdzjlZJs+qssnzxgvTyEWyFcfHm/D/Ot+czc2tRxDB3cxLZz6H++pIuX
+  DtGggHnQiZcuUrDbPnt5Xbs0iJakMYunRKVl5juKc+nSeQxoYeAtlcDLcl/ex0fm
+  Q5Kt9xJCluJwA8LIJ2ZokNwxJzErwR13LwFW7i8tDgUGal00UyajzxZCxC46fOJK
+  3Iya6eh5k/y4TZ0N9cC+w98nn4IjZiZmt43oDej8tW9go4bwhbq4QBzIZBORFgvJ
+  2wIDAQAB
+  -----END PUBLIC KEY-----`;
 
   const publicKey = forge.pki.publicKeyFromPem(publicKeyPem);
   const obj = {
-    apiKey: 'DEVpX5eY9rTqV2bD3F',
+    apiKey: 'njA4E1F486#9Otjm37h)7Rq1ULesPZFYs7(GJiP5ta',
     dateTimeUTC: new Date().toISOString(),
   };
 
   const jsonStr = JSON.stringify(obj);
   const encryptedObj = window.btoa(publicKey.encrypt(jsonStr));
-
+//step 1
+console.log(publicKey.encrypt(jsonStr), "asdfdasssssss")
   console.log(
     '%c -------------------------------------Frontend-------------------------------------',
     'background-color:red; color: white; font-size:20px',
